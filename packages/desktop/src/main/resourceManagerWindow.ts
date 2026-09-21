@@ -265,7 +265,8 @@ export function openResourceManager(): void {
     minHeight: 420,
     title: RESOURCE_MANAGER_WINDOW_TITLE,
     // 不继承主窗口的自定义标题栏，使用系统默认标题栏
-    backgroundColor: "#1e1e1e",
+    // 窗口底色跟随默认浅色主题，避免首屏渲染前露出深色闪屏。
+    backgroundColor: "#f8f8f8",
     webPreferences: {
       preload: preloadPath,
       contextIsolation: true,

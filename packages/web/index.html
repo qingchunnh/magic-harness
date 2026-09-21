@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#161616" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#f8f8f8" />
+    <meta name="color-scheme" content="light" />
     <!-- Chrome dev 下可能不发 favicon 网络请求；内嵌小尺寸 App 图标，避免标签页回退到默认图标。-->
     <link
       rel="icon"
@@ -17,7 +17,7 @@
       (() => {
         // JS bundle 执行前先按本地主题偏好决定首屏底色，避免 dark 用户在这一帧看到白底闪烁。
         const STORAGE_KEY = "zcode-theme";
-        const DEFAULT_THEME = "zai-dark";
+        const DEFAULT_THEME = "zai-light";
         const BROWSER_THEME_COLORS = {
           dark: "#161616",
           light: "#f8f8f8",
@@ -55,9 +55,9 @@
             document.documentElement.classList.add("dark");
           }
         } catch {
-          document.documentElement.setAttribute("data-zcode-bootstrap-theme", "dark");
-          syncBrowserThemeSurface("dark");
-          document.documentElement.classList.add("dark");
+          // 读取本地偏好失败时按默认浅色主题落地，与 DEFAULT_THEME 保持一致。
+          document.documentElement.setAttribute("data-zcode-bootstrap-theme", "light");
+          syncBrowserThemeSurface("light");
         }
       })();
     </script>
