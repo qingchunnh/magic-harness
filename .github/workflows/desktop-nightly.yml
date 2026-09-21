@@ -54,6 +54,9 @@ jobs:
 
       # TODO: 未配置签名/公证 secrets(CSC_LINK 等),macOS 与 Windows 产物均为未签名安装包
       - name: Bundle desktop app
+        env:
+          ZCODE_ENV: production
+          ZCODE_PREVIEW_IDENTITY: "1"
         run: pnpm --filter @zcode/desktop bundle -- --os ${{ matrix.target-os }} --arch ${{ matrix.target-arch }}
 
       - uses: actions/upload-artifact@v7
