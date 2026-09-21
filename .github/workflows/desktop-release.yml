@@ -1,0 +1,92 @@
+name: Desktop Release
+
+# 注意:tag 不存在时基于触发分支 HEAD 自动创建;已存在时复用并更新对应 Release
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 正式发版 tag
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# Node / pnpm 版本与 mise.toml 保持一致,升级 mise.toml 时同步修改这里
+env:
+  NODE_VERSION: "24.14.0"
+  PNPM_VERSION: "10.33.2"
+
+jobs:
+  build:
+    name: Bundle ${{ matrix.target-os }}/${{ matrix.target-arch }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-latest
+            target-os: mac
+            target-arch: arm64
+          - runner: windows-latest
+            target-os: win
+            target-arch: x64
+          - runner: ubuntu-latest
+            target-os: linux
+            target-arch: x64
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build workspace packages
+        run: pnpm -r --filter "./packages/*" --filter "!@zcode/desktop" build
+
+      # TODO: 未配置签名/公证 secrets(CSC_LINK 等),macOS 与 Windows 产物均为未签名安装包
+      - name: Bundle desktop app
+        run: pnpm --filter @zcode/desktop bundle -- --os ${{ matrix.target-os }} --arch ${{ matrix.target-arch }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: desktop-${{ matrix.target-os }}-${{ matrix.target-arch }}
+          path: |
+            packages/desktop/dist/*.dmg
+            packages/desktop/dist/*.zip
+            packages/desktop/dist/*.exe
+            packages/desktop/dist/*.AppImage
+            packages/desktop/dist/*.deb
+            packages/desktop/dist/*.rpm
+            packages/desktop/dist/*.pkg.tar.zst
+            packages/desktop/dist/latest*.yml
+            packages/desktop/dist/*.blockmap
+          retention-days: 7
+
+  publish:
+    name: Publish Release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: desktop-*
+          path: release-assets
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.tag }}
+          name: Magic Harness ${{ inputs.tag }}
+          prerelease: false
+          files: release-assets/*
+          fail_on_unmatched_files: true
