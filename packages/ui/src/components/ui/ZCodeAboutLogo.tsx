@@ -4,22 +4,21 @@ export function ZCodeAboutLogo({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="118"
-      height="100"
+      width="56"
+      height="56"
       fill="none"
-      viewBox="0 0 256 218"
+      viewBox="0 0 1024 1024"
       className={cn("shrink-0 text-current", className)}
       aria-hidden="true"
       focusable="false"
     >
       <path
-        fill="currentColor"
-        d="M134.4 0.130152L116.48 25.6022C113.665 29.5699 109.054 32.0019 104.064 32.0019H6.3999V0C6.3999 0.130149 134.4 0.130152 134.4 0.130152Z"
-      />
-      <path fill="currentColor" d="M256 0.130127L102.401 217.732H0L153.599 0.130127H256Z" />
-      <path
-        fill="currentColor"
-        d="M121.601 217.732L139.65 192.134C142.465 188.166 147.076 185.734 152.067 185.734H249.604V217.736H121.601V217.732Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={40}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M 512 178.564575 C 512 178.564575 439.086029 329.290161 379.870758 385.977539 C 319.295471 443.966858 162 511.764587 162 511.764587 C 162 511.764587 319.295471 579.562256 379.870758 637.551636 C 439.086029 694.239014 512 844.9646 512 844.9646 C 512 844.9646 584.914001 694.239014 644.129211 637.551636 C 704.704529 579.562256 862 511.764587 862 511.764587 C 862 511.764587 704.704529 443.966858 644.129211 385.977539 C 584.914001 329.290161 512 178.564575 512 178.564575 Z"
       />
     </svg>
   );
